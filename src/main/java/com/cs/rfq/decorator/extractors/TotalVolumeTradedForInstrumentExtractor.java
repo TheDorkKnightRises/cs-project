@@ -6,6 +6,9 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +17,10 @@ public class TotalVolumeTradedForInstrumentExtractor implements RfqMetadataExtra
     private String since;
 
     public TotalVolumeTradedForInstrumentExtractor() {
-        this.since = DateTime.now().getYear() + "-" + DateTime.now().minusMonths(1).getMonthOfYear() + "-01";
+        long pastMonthMs = DateTime.now().withMillis(System.currentTimeMillis()).minusMonths(1).getMillis();
+        DateFormat dtformat=new SimpleDateFormat("yyyy-MM-dd");
+        this.since=dtformat.format(new Date(pastMonthMs));
+
     }
 
     @Override
