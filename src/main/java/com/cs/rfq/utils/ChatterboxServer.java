@@ -1,5 +1,9 @@
 package com.cs.rfq.utils;
 
+import com.cs.rfq.decorator.Rfq;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -80,9 +84,16 @@ public class ChatterboxServer {
                     //naive polling of System.in to check for input and allow thread to be interrupted
                     if (System.in.available() > 0) {
                         String line = in.readLine();
-                        out.println(line);
-                        out.flush();
-                        log("sent", line);
+                        if (!"".equals(line.trim())) {
+                            try {
+                                new Gson().fromJson(line, Rfq.class);
+                                out.println(line);
+                                out.flush();
+                                log("sent", line);
+                            } catch (JsonSyntaxException e) {
+                                System.out.println("Invalid RFQ syntax");
+                            }
+                        }
                     }  else {
                         Thread.sleep(500);
                     }
