@@ -17,7 +17,7 @@ public class TotalVolumeTradedForInstrumentExtractor implements RfqMetadataExtra
     private String since;
 
     public TotalVolumeTradedForInstrumentExtractor() {
-        long pastMonthMs = DateTime.now().withMillis(System.currentTimeMillis()).minusMonths(1).getMillis();
+        long pastMonthMs = DateTime.now().minusMonths(1).getMillis();
         DateFormat dtformat=new SimpleDateFormat("yyyy-MM-dd");
         this.since=dtformat.format(new Date(pastMonthMs));
 
