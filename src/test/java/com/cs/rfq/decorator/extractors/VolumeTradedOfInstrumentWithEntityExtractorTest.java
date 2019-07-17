@@ -4,6 +4,7 @@ import com.cs.rfq.decorator.Rfq;
 import com.cs.rfq.decorator.TradeDataLoader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,41 +18,49 @@ public class VolumeTradedOfInstrumentWithEntityExtractorTest  extends AbstractSp
     @Before
     public void setup() {
         rfq = new Rfq();
+        rfq.setEntityId(5561279226039690843L);
         rfq.setIsin("AT0000A0VRQ6");
     }
 
     @Test
-    public void checkVolumeWhenInstrumentMatch() {
+    public void checkVolumeWhenInstrumentAndEntityMatch() {
 
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
-        AveragePriceOfInstrumentExtractor extractor = new AveragePriceOfInstrumentExtractor();
-        extractor.setSince("2018-06-10");
+        VolumeTradedOfInstrumentWithEntityExtractor extractor = new VolumeTradedOfInstrumentWithEntityExtractor();
+        extractor.setCurrent(new DateTime(2018, 6, 14, 0, 0));
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.averageInstrumentPrice);
+        Object result1 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastWeek);
+        Object result2 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastMonth);
+        Object result3 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastYear);
 
-        assertEquals(125.977, result);
-//        assertEquals(138.4396, result);
+        assertEquals(1_350_000L, result1);
+        assertEquals(1_350_000L, result2);
+        assertEquals(1_350_000L, result3);
     }
 
     @Test
-    public void CheckVolumeWhenNoInstrumentMatch() {
+    public void CheckVolumeWhenInstrumentAndEntityDontMatch() {
 
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
         //all test trade data are for 2018 so this will cause no matches
-        AveragePriceOfInstrumentExtractor extractor = new AveragePriceOfInstrumentExtractor();
-        extractor.setSince("2019-06-17");
+        VolumeTradedOfInstrumentWithEntityExtractor extractor = new VolumeTradedOfInstrumentWithEntityExtractor();
+        extractor.setCurrent(new DateTime(2019, 8, 15, 0, 0));
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.averageInstrumentPrice);
+        Object result1 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastWeek);
+        Object result2 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastMonth);
+        Object result3 = meta.get(RfqMetadataFieldNames.volumeTradedOfInstrumentWithEntityPastYear);
 
-        assertEquals(0, result);
+        assertEquals(0L, result1);
+        assertEquals(0L, result2);
+        assertEquals(0L, result3);
 
     }
 
