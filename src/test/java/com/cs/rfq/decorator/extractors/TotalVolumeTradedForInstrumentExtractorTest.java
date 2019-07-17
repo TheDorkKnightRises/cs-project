@@ -24,11 +24,12 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
     @Test
     public void checkVolumeWhenSomeTradesMatch() {
 
-        String filePath = getClass().getResource("volume-traded-4.json").getPath();
+        String filePath = getClass().getResource("volume-traded-2.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
         rfq.setIsin("AT0000A0VRQ6");
         TotalVolumeTradedForInstrumentExtractor extractor = new TotalVolumeTradedForInstrumentExtractor();
+        extractor.setSince("2019-06-17");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
@@ -40,7 +41,7 @@ public class TotalVolumeTradedForInstrumentExtractorTest extends AbstractSparkUn
     @Test
     public void checkVolumeWhenNoTradesMatch() {
 
-        String filePath = getClass().getResource("volume-traded-4.json").getPath();
+        String filePath = getClass().getResource("volume-traded-2.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
         //all test trade data are for AT0000A0VRQ6 so this will cause no matches
