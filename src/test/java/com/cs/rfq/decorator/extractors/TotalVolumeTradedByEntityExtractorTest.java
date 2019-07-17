@@ -4,6 +4,7 @@ import com.cs.rfq.decorator.Rfq;
 import com.cs.rfq.decorator.TradeDataLoader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,10 +26,7 @@ public class TotalVolumeTradedByEntityExtractorTest extends AbstractSparkUnitTes
         String filePath = getClass().getResource("volume-traded-2.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
 
-        extractor = new TotalVolumeTradedByEntityExtractor();
-        extractor.setLastWeek("2019-07-10");
-        extractor.setLastMonth("2019-06-17");
-        extractor.setLastYear("2018-07-17");
+        extractor = new TotalVolumeTradedByEntityExtractor(new DateTime(2019, 7, 17, 0, 0));
 
     }
 
