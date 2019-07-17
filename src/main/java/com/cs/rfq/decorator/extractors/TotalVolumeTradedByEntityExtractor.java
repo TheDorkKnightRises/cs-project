@@ -28,6 +28,16 @@ public class TotalVolumeTradedByEntityExtractor implements RfqMetadataExtractor 
         this.lastYear=dtFormat.format(new Date(pastYearMs));
     }
 
+    public TotalVolumeTradedByEntityExtractor(DateTime referenceDateTime) {
+        long pastWeekMs = referenceDateTime.minusWeeks(1).getMillis();
+        long pastMonthMs = referenceDateTime.minusMonths(1).getMillis();
+        long pastYearMs = referenceDateTime.minusYears(1).getMillis();
+        DateFormat dtFormat=new SimpleDateFormat("yyyy-MM-dd");
+        this.lastWeek=dtFormat.format(new Date(pastWeekMs));
+        this.lastMonth=dtFormat.format(new Date(pastMonthMs));
+        this.lastYear=dtFormat.format(new Date(pastYearMs));
+    }
+
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
         Object volumeWeek=getVolume(rfq,session,trades,this.lastWeek);
@@ -57,15 +67,4 @@ public class TotalVolumeTradedByEntityExtractor implements RfqMetadataExtractor 
         return volume;
     }
 
-    public void setLastWeek(String lastWeek) {
-        this.lastWeek = lastWeek;
-    }
-
-    public void setLastMonth(String lastMonth) {
-        this.lastMonth = lastMonth;
-    }
-
-    public void setLastYear(String lastYear) {
-        this.lastYear = lastYear;
-    }
 }
