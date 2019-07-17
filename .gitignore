@@ -1,3 +1,4 @@
 .idea
 *.iml
 /target/
+chat-history.txt

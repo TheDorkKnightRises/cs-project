@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * Simple chat server capable of sending and receiving String lines on separate in/out port numbers.
@@ -80,31 +81,52 @@ public class ChatterboxServer {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-                do {
-                    //naive polling of System.in to check for input and allow thread to be interrupted
-                    if (System.in.available() > 0) {
-                        String line = in.readLine();
-                        if (!"".equals(line.trim())) {
-                            try {
-                                new Gson().fromJson(line, Rfq.class);
-                                out.println(line);
-                                out.flush();
-                                log("sent", line);
-                            } catch (JsonSyntaxException e) {
-                                System.out.println("Invalid RFQ syntax");
-                            }
+                List<String> historyEntries = ChatHistoryUtil.getHistoryEntries();
+                String line = "";
+                while (true) {
+                    if (historyEntries.size() > 0) {
+                        System.out.println("1. Input RFQ\n2. Resend from history");
+                        switch (in.readLine().trim()) {
+                            case "1":
+                                line = in.readLine();
+                                sendLine(line, in, out);
+                                ChatHistoryUtil.addEntry(line);
+                                break;
+                            case "2":
+                                historyEntries = ChatHistoryUtil.getHistoryEntries();
+                                for (int i = 0; i < historyEntries.size(); i++) {
+                                    System.out.println((i + 1) + ": " + historyEntries.get(i));
+                                }
+                                int choice = Integer.parseInt(in.readLine());
+                                if (choice <= historyEntries.size()) {
+                                    line = historyEntries.get(choice - 1);
+                                    sendLine(line, in, out);
+                                }
+                                break;
                         }
-                    }  else {
-                        Thread.sleep(500);
+                    } else {
+                        line = in.readLine();
+                        sendLine(line, in, out);
+                        ChatHistoryUtil.addEntry(line);
                     }
-                } while (true);
-
-            } catch (InterruptedException e) {
-                log("connection closed by server");
-            } catch (Exception e) {
-                e.printStackTrace();
+                }
+            } catch (IOException e) {
+                log("Input output error");
             }
         });
+    }
+
+    static void sendLine(String line, BufferedReader in, PrintWriter out) {
+        if (!"".equals(line.trim())) {
+            try {
+                new Gson().fromJson(line, Rfq.class);
+                out.println(line);
+                out.flush();
+                log("sent", line);
+            } catch (JsonSyntaxException e) {
+                System.out.println("Invalid RFQ syntax");
+            }
+        }
     }
 
     private static Thread receive(final Socket socket) {
