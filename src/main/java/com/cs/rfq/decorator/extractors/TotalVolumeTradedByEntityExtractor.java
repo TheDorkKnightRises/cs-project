@@ -44,7 +44,7 @@ public class TotalVolumeTradedByEntityExtractor implements RfqMetadataExtractor 
 
     Object getVolume(Rfq rfq,SparkSession session,Dataset<Row> trades ,String since){
         String query = String.format("SELECT sum(LastQty) from trade where EntityId='%s' AND TradeDate >= '%s'",
-                rfq.getIsin(),
+                rfq.getEntityId(),
                 since);
 
         trades.createOrReplaceTempView("trade");
