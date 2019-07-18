@@ -21,7 +21,7 @@ public class BuySellRatioExtractor implements RfqMetadataExtractor{
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-        System.out.println("buysellcount"+trades.count());
+
         ArrayList<String> since = new ArrayList<>(2);
         since.add(current.minusWeeks(1).toString());
         since.add(current.minusMonths(1).toString());
