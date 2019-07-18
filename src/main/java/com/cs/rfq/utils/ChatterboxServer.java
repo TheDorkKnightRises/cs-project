@@ -85,7 +85,10 @@ public class ChatterboxServer {
                 String line = "";
                 while (true) {
                     if (historyEntries.size() > 0) {
-                        System.out.println("1. Input RFQ\n2. Resend from history");
+                        System.out.println("\nWhat would you like to do?\n" +
+                                "1. Input RFQ\n" +
+                                "2. Resend from history\n" +
+                                "3. Exit");
                         switch (in.readLine().trim()) {
                             case "1":
                                 line = in.readLine();
@@ -94,6 +97,7 @@ public class ChatterboxServer {
                                 break;
                             case "2":
                                 historyEntries = ChatHistoryUtil.getHistoryEntries();
+                                System.out.println("\nPick RFQ to resend");
                                 for (int i = 0; i < historyEntries.size(); i++) {
                                     System.out.println((i + 1) + ": " + historyEntries.get(i));
                                 }
@@ -101,8 +105,15 @@ public class ChatterboxServer {
                                 if (choice <= historyEntries.size()) {
                                     line = historyEntries.get(choice - 1);
                                     sendLine(line, in, out);
+                                } else {
+                                    System.out.println("Invalid choice.");
                                 }
                                 break;
+                            case "3":
+                                System.out.println("Terminated");
+                                return;
+                            default:
+                                System.out.println("Invalid choice. Please input options (1-3)");
                         }
                     } else {
                         line = in.readLine();
