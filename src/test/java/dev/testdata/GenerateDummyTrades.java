@@ -27,7 +27,7 @@ public class GenerateDummyTrades {
 
     //output trade reports file:
     private static final String trades_file = "src/test/resources/trades/trades.json";
-
+    private static final String rfqs_file = "src/test/resources/trades/rfq.json";
     //variables:
     private static final int counterparties_limit = 10;
     private static final int instruments_limit = 10;
@@ -35,6 +35,9 @@ public class GenerateDummyTrades {
     private static final int trades_max = 15;
 
     public static void main(String[] args) throws Exception {
+
+        //save to trades file
+        PrintWriter rfqOut = new PrintWriter(new FileWriter(Paths.get(rfqs_file).toFile()));
 
         //load counterparty data
         Set<Counterparty> counterparties = Files.lines(Paths.get(counterparties_file))
@@ -55,7 +58,19 @@ public class GenerateDummyTrades {
         counterparties.forEach(c -> {
             instruments.forEach(i -> {
                 tradeDates(trades_min, trades_max).forEach(tradeDate -> {
-                    trades.add(new TradeCaptureReport(c, i, tradeDate));
+                    TradeCaptureReport tradeCaptureReport = new TradeCaptureReport(c, i, tradeDate);
+                    trades.add(tradeCaptureReport);
+
+                    char side = (tradeCaptureReport.Side == 1)?'B':'S';
+                    rfqOut.write("{ 'id':" + tradeCaptureReport.OrderID +
+                            ", 'traderId':" + tradeCaptureReport.TraderId +
+                            ", 'entityId':" + tradeCaptureReport.EntityId +
+                            ", 'instrumentId':'" + tradeCaptureReport.SecurityID + "'" +
+                            ", 'qty':" + tradeCaptureReport.LastQty +
+                            ", 'price':" + tradeCaptureReport.LastPx +
+                            ", 'side':" + side +
+                            "}\n");
+
                 });
             });
         });
@@ -68,6 +83,8 @@ public class GenerateDummyTrades {
         trades.forEach(out::println);
         out.flush();
         out.close();
+        rfqOut.flush();
+        rfqOut.close();
 
         System.out.println("Generated: " + trades.size() + " records");
     }
