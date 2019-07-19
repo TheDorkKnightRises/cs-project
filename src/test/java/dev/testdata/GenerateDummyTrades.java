@@ -61,15 +61,14 @@ public class GenerateDummyTrades {
                     TradeCaptureReport tradeCaptureReport = new TradeCaptureReport(c, i, tradeDate);
                     trades.add(tradeCaptureReport);
 
-                    char side = (tradeCaptureReport.Side == 1)?'B':'S';
                     rfqOut.write("{ 'id':" + tradeCaptureReport.OrderID +
                             ", 'traderId':" + tradeCaptureReport.TraderId +
                             ", 'entityId':" + tradeCaptureReport.EntityId +
                             ", 'instrumentId':'" + tradeCaptureReport.SecurityID + "'" +
                             ", 'qty':" + tradeCaptureReport.LastQty +
                             ", 'price':" + tradeCaptureReport.LastPx +
-                            ", 'side':" + side +
-                            "}\n");
+                            ", 'side':'" + tradeCaptureReport.Side +
+                            "' }\n");
 
                 });
             });

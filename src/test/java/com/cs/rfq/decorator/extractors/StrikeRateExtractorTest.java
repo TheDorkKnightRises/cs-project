@@ -1,6 +1,7 @@
 package com.cs.rfq.decorator.extractors;
 
 import com.cs.rfq.decorator.Rfq;
+import com.cs.rfq.decorator.RfqDataLoader;
 import com.cs.rfq.decorator.TradeDataLoader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -27,10 +28,13 @@ public class StrikeRateExtractorTest extends AbstractSparkUnitTest {
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         Dataset<Row> trades = new TradeDataLoader().loadTrades(session, filePath);
 
+        String filePath1 = "src\\test\\resources\\com\\cs\\rfq\\decorator\\rfq.json";
+        Dataset<Row> rfqs = new RfqDataLoader().loadRfq(session, filePath1);
+
         StrikeRateExtractor extractor = new StrikeRateExtractor();
         //extractor.setSince("2018-06-10");
 
-        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades,rfqs);
 
         Object result = meta.get(RfqMetadataFieldNames.strikeRate);
 

@@ -2,7 +2,6 @@ package com.cs.rfq.decorator;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.joda.time.DateTime;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -25,7 +24,7 @@ public class Rfq implements Serializable {
         BufferedWriter writer = null;
         try {
             writer = new BufferedWriter(
-                    new FileWriter("C:\\Users\\Associate\\Desktop\\CS_Project\\cs-project\\src\\test\\resources\\com\\cs\\rfq\\decorator\\rfq.json", true)  //Set true for append mode
+                    new FileWriter("src\\test\\resources\\trades\\rfq.json", true)  //Set true for append mode
             );
             writer.newLine();   //Add new line
 

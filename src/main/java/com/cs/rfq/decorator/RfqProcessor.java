@@ -8,7 +8,6 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.streaming.api.java.JavaDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.apache.spark.sql.functions.sum;
 
 public class RfqProcessor {
 
@@ -38,7 +35,7 @@ public class RfqProcessor {
         this.streamingContext = streamingContext;
 
         //TODO: use the TradeDataLoader to load the trade data archives
-        this.trades = new TradeDataLoader().loadTrades(session, "src/test/resources/trades/*.json");
+        this.trades = new TradeDataLoader().loadTrades(session, "src/test/resources/trades/trades.json");
 
         //TODO: take a close look at how these two extractors are implemented
         extractors.add(new TotalTradesWithEntityExtractor());
@@ -48,6 +45,7 @@ public class RfqProcessor {
         extractors.add(new TotalVolumeTradedByEntityExtractor());
         extractors.add(new VolumeTradedOfInstrumentWithEntityExtractor());
         extractors.add(new BuySellRatioExtractor());
+        extractors.add(new StrikeRateExtractor());
     }
 
     public void startSocketListener() throws InterruptedException {
