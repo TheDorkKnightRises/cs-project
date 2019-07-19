@@ -23,16 +23,18 @@ public class TradeDataLoaderTest extends AbstractSparkUnitTest {
         Long traderId = trades.first().getLong(0);
         Long entityId = trades.first().getLong(1);
         String securityId = trades.first().getString(2);
-        Long lastQty = trades.first().getLong(3);
-        Double lastPx = trades.first().getDouble(4);
-        Date tradeDate = trades.first().getDate(5);
-        String currency = trades.first().getString(6);
-        Long side = trades.first().getLong(7);
+        Long orderID = trades.first().getLong(3);
+        Long lastQty = trades.first().getLong(4);
+        Double lastPx = trades.first().getDouble(5);
+        Date tradeDate = trades.first().getDate(6);
+        String currency = trades.first().getString(7);
+        Long side = trades.first().getLong(8);
 
         assertEquals((Long) 7704615737577737110L, traderId);
         assertEquals((Long) 5561279226039690843L, entityId);
         assertEquals("AT0000A0VRQ6", securityId);
         assertEquals((Long) 500000L, lastQty);
+        assertEquals((Long) 7754419459932278311L, orderID);
         assertEquals((Double) 139.648, lastPx);
         //2018-06-09
         Date expected = new Date(new DateTime().withYear(2018).withMonthOfYear(6).withDayOfMonth(9).withMillisOfDay(0).getMillis());

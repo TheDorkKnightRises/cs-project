@@ -28,7 +28,6 @@ public class Rfq implements Serializable {
             );
             writer.newLine();   //Add new line
 
-            json="{'id':"+String.valueOf(System.currentTimeMillis())+","+json.trim().substring(1,json.length());
             writer.write(json);
             writer.close();
         } catch (IOException e) {
@@ -66,11 +65,11 @@ public class Rfq implements Serializable {
     }
 
     public boolean isBuySide() {
-        return "B".equals(side);
+        return "1".equals(side);
     }
 
     public boolean isSellSide() {
-        return "S".equals(side);
+        return "2".equals(side);
     }
 
     public String getId() {

@@ -1,6 +1,5 @@
 package com.cs.rfq.decorator;
 
-import com.cs.rfq.decorator.Rfq;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,7 +15,7 @@ public class RfqTest {
                 "'instrumentId': 'AT0000383864', " +
                 "'qty': 250000, " +
                 "'price': 1.58, " +
-                "'side': 'B' " +
+                "'side': '1' " +
                 "}";
 
         Rfq rfq = Rfq.fromJson(validRfqJson);
@@ -27,7 +26,7 @@ public class RfqTest {
         assertEquals("AT0000383864", rfq.getIsin());
         assertEquals((Long) 250000L, rfq.getQuantity());
         assertEquals((Double) 1.58, rfq.getPrice());
-        assertEquals("B", rfq.getSide());
+        assertEquals("1", rfq.getSide());
         assertTrue(rfq.isBuySide());
         assertFalse(rfq.isSellSide());
     }
