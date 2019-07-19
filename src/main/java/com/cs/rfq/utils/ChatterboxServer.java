@@ -130,6 +130,7 @@ public class ChatterboxServer {
     static void sendLine(String line, BufferedReader in, PrintWriter out) {
         if (!"".equals(line.trim())) {
             try {
+                line="{'id':"+ System.currentTimeMillis() +","+line.trim().substring(1,line.length());
                 new Gson().fromJson(line, Rfq.class);
                 out.println(line);
                 out.flush();
